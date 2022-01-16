@@ -1,0 +1,182 @@
+\documentclass[a4paper,12pt, titlepage]{article}
+\usepackage[english]{babel}
+\usepackage[svgnames]{xcolor} % Required for colour specification
+\newcommand{\plogo}{\fbox{$\mathcal{PL}$}} % Generic dummy publisher logo
+\usepackage[utf8x]{inputenc} % Required for inputting international characters
+\usepackage{longtable}
+\usepackage[a4paper,top=2cm,bottom=1.5cm,left=2cm,right=2cm]{geometry}
+\usepackage{multicol}
+%\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage[final]{pdfpages}
+\usepackage{amssymb,amsmath}
+\usepackage{hyperref}
+%\usepackage{Sweave}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{threeparttable, tablefootnote}
+\usepackage{lscape}
+\usepackage{multirow}
+\usepackage{pdflscape}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{colortbl, xcolor}
+\usepackage{color} 
+\usepackage{arydshln}
+
+\newcommand{\Rlogo}{\protect\includegraphics[height=1.8ex,keepaspectratio]{/Users/jvila/Dropbox/cursoR/fig/Rlogo.pdf}}
+
+%\usepackage{draftwatermark}
+%\SetWatermarkText{Draft}
+%\SetWatermarkScale{8}
+
+% to coloured verbatim
+\usepackage{fancyvrb}
+\DefineVerbatimEnvironment{verbatim}
+  {Verbatim}
+  {fontsize=\small,formatcom=\color{blue}}
+
+%\newcommand{\headrulecolor}[1]{\patchcmd{\headrule}{\hrule}{\color{#1}\hrule}{}{}}
+%\newcommand{\footrulecolor}[1]{\patchcmd{\footrule}{\hrule}{\color{#1}\hrule}{}{}}
+
+\pagestyle{fancy}% Change page style to fancy
+\fancyhf{}% Clear header/footer
+\fancyhead[L]{ }
+\fancyhead[C]{\tiny Tesi Rafa Llorens}
+\fancyhead[R]{\today}
+\fancyfoot[L]{Author: Joan Vila}
+\fancyfoot[R]{Page: \thepage}
+\renewcommand{\headrulewidth}{1.2pt}% Default \headrulewidth is 0.4pt
+\renewcommand{\footrulewidth}{0.8pt}% Default \footrulewidth is 0pt
+
+
+
+\newenvironment{changemargin1}{
+  \begin{list}{}{
+    \setlength{\leftmargin}{-1cm}
+    \setlength{\rightmargin}{1cm}
+    \footnotesize
+  }
+  \item[]
+  }{\end{list}}
+
+\setcounter{tocdepth}{4} 
+\setcounter{secnumdepth}{4}
+%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%
+\title{
+\begin{center}
+\textbf{\Huge {\color{red}``Study SHARE''}\\
+\small Tesi Rafa Llorens\\
+ \texttt{rafallorens@euit.fdsll.cat}\\
+\
+\\
+\large Version 1.0}\\
+\
+\\
+{\large - Joan Vila -\\
+\texttt{joanviladomenech@gmail.com} }
+\date{\today} 
+\end{center}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+\newpage
+
+\section{Version History}
+\begin{table}[H]
+\centering
+\begin{tabular}{L{2cm}  C{3.5cm}  L{9cm}}
+\hline
+Version  & Effective Date & Changes \\
+\hline
+ &  & \\
+1 & 06-Dec-2021  & Exploració de les dades + expresió de dubtes\\
+ &  & \\
+ &  & \\
+ &  & \\
+\hline
+\end{tabular}
+\end{table}
+\newpage
+\tableofcontents
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+<<echo=FALSE, results='hide', warning=FALSE, error=FALSE, message=FALSE>>=
+rm(list=ls())
+setwd("/Users/jvila/Dropbox/euit/Doctorants/RafaLlorens/SHARE/RafaSHARE/")
+library(haven)
+library(Epi)
+library(Hmisc)
+library(gdata)
+library(compareGroups)
+load("../data/dat.rda")
+
+@
+\section{Introduction}
+
+Es parteix de la base de dades ``Easy567depurada v311gener.sav', que va fer arribar en Rafa el 13/01/2022.\\
+
+La base de dades \Sexpr{nrow(dat)} registres, a partir de tres entrevistes realitzades a \Sexpr{length(unique(dat$Identificadorpersona))} individus. \\
+
+Concretament les entrevistes es van realitzar:
+<<echo=FALSE, results='markup', warning=FALSE, error=FALSE, message=FALSE>>=
+table(dat$Añoentrevista)
+@
+
+A continuació hi ha una taula amb una descripció de les característiques basals (Ola = 5) segons sexe.  \\
+
+Hi són pràcticament totes les variables de la base de dades, més algunes creades per JVila. Algunes variables no hi són, però es comenten a les seccions ``PREGUNTES''.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{landscape}
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE>>=
+export2latex(
+createTable(compareGroups(sex ~ country + PartiType +  nacidopaisentrevist + age 
+                          + yearGroup + ageGroup + civilStat + edadpareja
+                          + vivirconyugue + numerohijos + numeronietos +
+                          + personasconvivenhogar + hijovivecerca + vivemadre
+                          + vivepadre + hermanosvivos + nivelestudios
+                          + añoseducacion + situacionlaboral + llegarfindemes
+                          + zonaresidencia + Ingresoshogar + ayudaeconomica
+                          + saludinfantil + vacunasinfantil + enfermcronic
+                          + limitacionAVD + dificultadmovilidad + saludautopercibida    
+                          + visitasmedico12meses + ingresohospital12meses + indicemasacorporal
+                          + categoriaIMC + Fumaadiario + bebeadiario
+                          + activfisica + escaladepresion + CASP + casp.12
+                          , 
+                          method = c(3,3,3,1,3,3,3,1,3,2, 2,2,3,3,3,2,3,
+                                     2, 3, 3,
+                                     3, 2, 2,
+                                     2, 2, 2, 
+                                     2, 2, 2, 
+                                     2, 2, 1, 
+                                     3, 3, 3, 
+                                     3, 3, 3, 1),
+                          data = dat, subset = visnumber==1, max.xlev = 15),
+            show.all = TRUE, all.last = TRUE, show.n = T, 
+            hide.no = c("N", "No"))
+, caption= "General characteristics at recruitment by sex", size = "small")
+@
+\end{landscape}
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+

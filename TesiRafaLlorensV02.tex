@@ -1,0 +1,355 @@
+\documentclass[a4paper,12pt, titlepage]{article}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[english]{babel}
+\usepackage[svgnames]{xcolor} % Required for colour specification
+\newcommand{\plogo}{\fbox{$\mathcal{PL}$}} % Generic dummy publisher logo
+\usepackage[utf8x]{inputenc} % Required for inputting international characters
+\usepackage{longtable}
+\usepackage[a4paper,top=2cm,bottom=1.5cm,left=2cm,right=2cm]{geometry}
+\usepackage{multicol}
+%\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage[final]{pdfpages}
+\usepackage{amssymb,amsmath}
+\usepackage{hyperref}
+%\usepackage{Sweave}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{threeparttable, tablefootnote}
+\usepackage{lscape}
+\usepackage{multirow}
+\usepackage{pdflscape}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{colortbl, xcolor}
+\usepackage{color} 
+\usepackage{arydshln}
+
+\newcommand{\Rlogo}{\protect\includegraphics[height=1.8ex,keepaspectratio]{/Users/jvila/Dropbox/cursoR/fig/Rlogo.pdf}}
+
+%\usepackage{draftwatermark}
+%\SetWatermarkText{Draft}
+%\SetWatermarkScale{8}
+
+% to coloured verbatim
+\usepackage{fancyvrb}
+\DefineVerbatimEnvironment{verbatim}
+  {Verbatim}
+  {fontsize=\small,formatcom=\color{blue}}
+
+%\newcommand{\headrulecolor}[1]{\patchcmd{\headrule}{\hrule}{\color{#1}\hrule}{}{}}
+%\newcommand{\footrulecolor}[1]{\patchcmd{\footrule}{\hrule}{\color{#1}\hrule}{}{}}
+
+\pagestyle{fancy}% Change page style to fancy
+\fancyhf{}% Clear header/footer
+\fancyhead[L]{ }
+\fancyhead[C]{\tiny Tesi Rafa Llorens}
+\fancyhead[R]{\today}
+\fancyfoot[L]{Author: Joan Vila}
+\fancyfoot[R]{Page: \thepage}
+\renewcommand{\headrulewidth}{1.2pt}% Default \headrulewidth is 0.4pt
+\renewcommand{\footrulewidth}{0.8pt}% Default \footrulewidth is 0pt
+
+
+
+\newenvironment{changemargin1}{
+  \begin{list}{}{
+    \setlength{\leftmargin}{-1cm}
+    \setlength{\rightmargin}{1cm}
+    \footnotesize
+  }
+  \item[]
+  }{\end{list}}
+
+\setcounter{tocdepth}{4} 
+\setcounter{secnumdepth}{4}
+%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%
+\title{
+\begin{center}
+\textbf{\Huge {\color{red}``Study SHARE''}\\
+\small Tesi Rafa Llorens\\
+ \texttt{rafallorens@euit.fdsll.cat}\\
+\
+\\
+\large Version 1.0}\\
+\
+\\
+{\large - Joan Vila -\\
+\texttt{joanviladomenech@gmail.com} }
+\date{\today} 
+\end{center}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+\maketitle
+\newpage
+
+\section{Version History}
+\begin{table}[H]
+\centering
+\begin{tabular}{L{2cm}  C{3.5cm}  L{9cm}}
+\hline
+Version  & Effective Date & Changes \\
+\hline
+ &  & \\
+1 & 06-Dec-2021  & Exploració de les dades + expresió de dubtes\\
+ &  & \\
+ &  & \\
+ &  & \\
+\hline
+\end{tabular}
+\end{table}
+\newpage
+\tableofcontents
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\section{Introduction}
+
+Es parteix de la base de dades ``Easy567depurada v311gener.sav', que va fer arribar en Rafa el 13/01/2022.\\
+
+La base de dades 34680 registres, a partir de tres entrevistes realitzades a 11560 individus. \\
+
+Concretament les entrevistes es van realitzar:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## 
+##  2013  2015  2017 
+## 11560 11560 11560
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+A continuació hi ha una taula amb una descripció de les característiques basals (Ola = 5) segons sexe.  \\
+
+Hi són pràcticament totes les variables de la base de dades, més algunes creades per JVila. Algunes variables no hi són, però es comenten a les seccions ``PREGUNTES''.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{landscape}
+\begin{small}    
+    \begin{longtable}{lccccc}\caption{General characteristics at recruitment by sex}\\
+    \hline  
+     &       Female        &        Male         &        [ALL]        & \multirow{2}{*}{p.overall} & \multirow{2}{*}{  N  }\\ 
+ &       N=6289        &       N=5271        &       N=11560       &           &       \\ 
+  
+    \hline
+    \hline     
+    \endfirsthead 
+    \multicolumn{6}{l}{\tablename\ \thetable{} \textit{-- continued from previous page}}\\ 
+    \hline
+     &       Female        &        Male         &        [ALL]        & \multirow{2}{*}{p.overall} & \multirow{2}{*}{  N  }\\ 
+ &       N=6289        &       N=5271        &       N=11560       &           &       \\ 
+
+    \hline
+    \hline  
+    \endhead   
+    \hline
+    \multicolumn{6}{l}{\textit{continued on next page}} \\ 
+    \endfoot   
+    \multicolumn{6}{l}{}  \\ 
+    \endlastfoot 
+    Country: &                     &                     &                     &   0.089   & 11560\\ 
+$\qquad$Austria &     40 (0.64\%)      &     42 (0.80\%)      &     82 (0.71\%)      &           &      \\ 
+$\qquad$Belgium &     427 (6.79\%)     &     358 (6.79\%)     &     785 (6.79\%)     &           &      \\ 
+$\qquad$Czech Republic &     481 (7.65\%)     &     338 (6.41\%)     &     819 (7.08\%)     &           &      \\ 
+$\qquad$Denmark &     670 (10.7\%)     &     553 (10.5\%)     &    1223 (10.6\%)     &           &      \\ 
+$\qquad$Estonia &     52 (0.83\%)      &     64 (1.21\%)      &     116 (1.00\%)     &           &      \\ 
+$\qquad$France &     45 (0.72\%)      &     31 (0.59\%)      &     76 (0.66\%)      &           &      \\ 
+$\qquad$Germany &    1427 (22.7\%)     &    1253 (23.8\%)     &    2680 (23.2\%)     &           &      \\ 
+$\qquad$Italy &     549 (8.73\%)     &     465 (8.82\%)     &    1014 (8.77\%)     &           &      \\ 
+$\qquad$Luxembourg &     436 (6.93\%)     &     353 (6.70\%)     &     789 (6.83\%)     &           &      \\ 
+$\qquad$Slovenia &     363 (5.77\%)     &     262 (4.97\%)     &     625 (5.41\%)     &           &      \\ 
+$\qquad$Spain &     963 (15.3\%)     &     806 (15.3\%)     &    1769 (15.3\%)     &           &      \\ 
+$\qquad$Sweden &     808 (12.8\%)     &     720 (13.7\%)     &    1528 (13.2\%)     &           &      \\ 
+$\qquad$Switzerland &     28 (0.45\%)      &     26 (0.49\%)      &     54 (0.47\%)      &           &      \\ 
+Participant/Partner: &                     &                     &                     &   0.386   & 11560\\ 
+$\qquad$Participant &    4594 (73.0\%)     &    3889 (73.8\%)     &    8483 (73.4\%)     &           &      \\ 
+$\qquad$Partner &    1695 (27.0\%)     &    1382 (26.2\%)     &    3077 (26.6\%)     &           &      \\ 
+Born country Interv. &    5672 (90.2\%)     &    4758 (90.3\%)     &    10430 (90.2\%)    &   0.913   & 11560\\ 
+Age &     63.1 (10.3)     &     64.3 (9.38)     &     63.7 (9.90)     &  $<$0.001   & 11560\\ 
+Born year Group: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$1900-1928 &     189 (3.01\%)     &     116 (2.20\%)     &     305 (2.64\%)     &           &      \\ 
+$\qquad$1929-1938 &     844 (13.4\%)     &     791 (15.0\%)     &    1635 (14.1\%)     &           &      \\ 
+$\qquad$1939-1948 &    1713 (27.2\%)     &    1635 (31.0\%)     &    3348 (29.0\%)     &           &      \\ 
+$\qquad$1949-1963 &    3306 (52.6\%)     &    2696 (51.1\%)     &    6002 (51.9\%)     &           &      \\ 
+$\qquad$1964-1999 &     237 (3.77\%)     &     33 (0.63\%)      &     270 (2.34\%)     &           &      \\ 
+Age Group: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$$<$50 &     207 (3.29\%)     &     24 (0.46\%)      &     231 (2.00\%)     &           &      \\ 
+$\qquad$$>$85 &     206 (3.28\%)     &     141 (2.68\%)     &     347 (3.00\%)     &           &      \\ 
+$\qquad$50-64 &    3238 (51.5\%)     &    2619 (49.7\%)     &    5857 (50.7\%)     &           &      \\ 
+$\qquad$65-74 &    1753 (27.9\%)     &    1668 (31.6\%)     &    3421 (29.6\%)     &           &      \\ 
+$\qquad$75-84 &     885 (14.1\%)     &     819 (15.5\%)     &    1704 (14.7\%)     &           &      \\ 
+Civil Status: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$casado‎/a o pareja registrada &    4489 (71.4\%)     &    4254 (80.7\%)     &    8743 (75.6\%)     &           &      \\ 
+$\qquad$divorciado‎/a o separado‎/a &     641 (10.2\%)     &     433 (8.21\%)     &    1074 (9.29\%)     &           &      \\ 
+$\qquad$soltero/a &     322 (5.12\%)     &     350 (6.64\%)     &     672 (5.81\%)     &           &      \\ 
+$\qquad$viudo/a &     837 (13.3\%)     &     234 (4.44\%)     &    1071 (9.26\%)     &           &      \\ 
+Couple Age &     64.7 (9.47)     &     61.1 (9.64)     &     62.9 (9.72)     &  $<$0.001   & 9183 \\ 
+Living with a Couple &    4716 (75.0\%)     &    4473 (84.9\%)     &    9189 (79.5\%)     &  $<$0.001   & 11560\\ 
+Numero de hijos &  2.00 [1.00;3.00]   &  2.00 [1.00;3.00]   &  2.00 [1.00;3.00]   &   0.153   & 11560\\ 
+numeronietos &  2.00 [0.00;4.00]   &  1.00 [0.00;3.00]   &  1.00 [0.00;4.00]   &  $<$0.001   & 11557\\ 
+personas que conviven en el hogar &  2.00 [2.00;2.00]   &  2.00 [2.00;3.00]   &  2.00 [2.00;2.00]   &  $<$0.001   & 11560\\ 
+Algun hijo‎/a vive cerca: &                     &                     &                     &   0.003   & 11560\\ 
+$\qquad$no &    3149 (50.1\%)     &    2641 (50.1\%)     &    5790 (50.1\%)     &           &      \\ 
+$\qquad$si &    2619 (41.6\%)     &    2102 (39.9\%)     &    4721 (40.8\%)     &           &      \\ 
+$\qquad$sin hijos &     521 (8.28\%)     &     528 (10.0\%)     &    1049 (9.07\%)     &           &      \\ 
+¿Sigue viva la madre? &    1893 (30.1\%)     &    1386 (26.3\%)     &    3279 (28.4\%)     &  $<$0.001   & 11560\\ 
+¿Sigue vivo el padre? &     875 (13.9\%)     &     637 (12.1\%)     &    1512 (13.1\%)     &   0.004   & 11560\\ 
+Alive brothers &  2.00 [1.00;3.00]   &  2.00 [1.00;3.00]   &  2.00 [1.00;3.00]   &   0.634   & 11560\\ 
+nivelestudios: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$Alto &    2415 (38.4\%)     &    1645 (31.2\%)     &    4060 (35.1\%)     &           &      \\ 
+$\qquad$bajo &    1530 (24.3\%)     &    1551 (29.4\%)     &    3081 (26.7\%)     &           &      \\ 
+$\qquad$medio &    2344 (37.3\%)     &    2075 (39.4\%)     &    4419 (38.2\%)     &           &      \\ 
+Años de educación &  12.0 [9.00;14.0]   &  12.0 [9.00;15.0]   &  12.0 [9.00;14.0]   &  $<$0.001   & 11432\\ 
+situacionlaboral: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$Ama de casa &     629 (10.0\%)     &      0 (0.00\%)      &     629 (5.44\%)     &           &      \\ 
+$\qquad$desempleado &      0 (0.00\%)      &     208 (3.95\%)     &     208 (1.80\%)     &           &      \\ 
+$\qquad$discapacitado/enfermedad permanente &      1 (0.02\%)      &     148 (2.81\%)     &     149 (1.29\%)     &           &      \\ 
+$\qquad$empleado‎/autonomo &    2425 (38.6\%)     &    2010 (38.1\%)     &    4435 (38.4\%)     &           &      \\ 
+$\qquad$Jubilado‎/a &    3234 (51.4\%)     &    2905 (55.1\%)     &    6139 (53.1\%)     &           &      \\ 
+llegarfindemes: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$bastante facil &    1877 (29.8\%)     &    1571 (29.8\%)     &    3448 (29.8\%)     &           &      \\ 
+$\qquad$con alguna dificultad &    1463 (23.3\%)     &    1072 (20.3\%)     &    2535 (21.9\%)     &           &      \\ 
+$\qquad$Con gran dificultad &     460 (7.31\%)     &     337 (6.39\%)     &     797 (6.89\%)     &           &      \\ 
+$\qquad$facilmente &    2489 (39.6\%)     &    2291 (43.5\%)     &    4780 (41.3\%)     &           &      \\ 
+zonaresidencia: &                     &                     &                     &   0.406   & 11560\\ 
+$\qquad$area rural &    1831 (29.1\%)     &    1584 (30.1\%)     &    3415 (29.5\%)     &           &      \\ 
+$\qquad$Gran ciudad &     808 (12.8\%)     &     623 (11.8\%)     &    1431 (12.4\%)     &           &      \\ 
+$\qquad$Pueblo grande &    1108 (17.6\%)     &     915 (17.4\%)     &    2023 (17.5\%)     &           &      \\ 
+$\qquad$Pueblo pequeño &    1903 (30.3\%)     &    1628 (30.9\%)     &    3531 (30.5\%)     &           &      \\ 
+$\qquad$Suburbios‎/afueras gran ciudad &     639 (10.2\%)     &     521 (9.88\%)     &    1160 (10.0\%)     &           &      \\ 
+Ingresoshogar & 27824 [15985;46260] & 31644 [18712;51810] & 29710 [17145;49122] &  $<$0.001   & 11560\\ 
+Recibió ayuda de otros (fuera de hh) &    1186 (18.9\%)     &     835 (15.8\%)     &    2021 (17.5\%)     &  $<$0.001   & 11560\\ 
+Estado de salud infantil: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$Buena &    1758 (28.0\%)     &    1391 (26.4\%)     &    3149 (27.2\%)     &           &      \\ 
+$\qquad$Excelente &    1995 (31.7\%)     &    1835 (34.8\%)     &    3830 (33.1\%)     &           &      \\ 
+$\qquad$Justa &     540 (8.59\%)     &     384 (7.29\%)     &     924 (7.99\%)     &           &      \\ 
+$\qquad$Muy buena &    1795 (28.5\%)     &    1538 (29.2\%)     &    3333 (28.8\%)     &           &      \\ 
+$\qquad$Pobre &     201 (3.20\%)     &     123 (2.33\%)     &     324 (2.80\%)     &           &      \\ 
+Vacunas durante la infancia &    6049 (96.2\%)     &    5084 (96.5\%)     &    11133 (96.3\%)    &   0.476   & 11560\\ 
+enfermedades cronicas: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$entre 0 y 1 &    4481 (71.3\%)     &    3544 (67.2\%)     &    8025 (69.4\%)     &           &      \\ 
+$\qquad$entre 2 y 10 &    1808 (28.7\%)     &    1727 (32.8\%)     &    3535 (30.6\%)     &           &      \\ 
+Acti.Vida Diaria Indice W \& H: &                     &                     &                     &   0.093   & 11560\\ 
+$\qquad$con limitacion &     448 (7.12\%)     &     333 (6.32\%)     &     781 (6.76\%)     &           &      \\ 
+$\qquad$sin limitacion &    5841 (92.9\%)     &    4938 (93.7\%)     &    10779 (93.2\%)    &           &      \\ 
+dificultadmovilidad: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$Alguna dificultad &    1358 (21.6\%)     &     778 (14.8\%)     &    2136 (18.5\%)     &           &      \\ 
+$\qquad$Mucha dificultad &     274 (4.36\%)     &     166 (3.15\%)     &     440 (3.81\%)     &           &      \\ 
+$\qquad$Sin dificultad &    4657 (74.0\%)     &    4327 (82.1\%)     &    8984 (77.7\%)     &           &      \\ 
+saludautopercibida: &                     &                     &                     &   0.001   & 11560\\ 
+$\qquad$Buena &    2297 (36.5\%)     &    2077 (39.4\%)     &    4374 (37.8\%)     &           &      \\ 
+$\qquad$Excelente &     714 (11.4\%)     &     609 (11.6\%)     &    1323 (11.4\%)     &           &      \\ 
+$\qquad$Muy buena &    1278 (20.3\%)     &    1089 (20.7\%)     &    2367 (20.5\%)     &           &      \\ 
+$\qquad$Pesima &     492 (7.82\%)     &     355 (6.73\%)     &     847 (7.33\%)     &           &      \\ 
+$\qquad$Regular &    1508 (24.0\%)     &    1141 (21.6\%)     &    2649 (22.9\%)     &           &      \\ 
+visitasmedico12meses: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$de 1 a 5 &    3984 (63.3\%)     &    3580 (67.9\%)     &    7564 (65.4\%)     &           &      \\ 
+$\qquad$de 11 a 20 &     749 (11.9\%)     &     547 (10.4\%)     &    1296 (11.2\%)     &           &      \\ 
+$\qquad$de 21 a 30 &     164 (2.61\%)     &     136 (2.58\%)     &     300 (2.60\%)     &           &      \\ 
+$\qquad$de 31 a 100 &     144 (2.29\%)     &     105 (1.99\%)     &     249 (2.15\%)     &           &      \\ 
+$\qquad$de 6 a 10 &    1248 (19.8\%)     &     903 (17.1\%)     &    2151 (18.6\%)     &           &      \\ 
+ingresohospital12meses &     806 (12.8\%)     &     719 (13.6\%)     &    1525 (13.2\%)     &   0.201   & 11560\\ 
+Índice de masa corporal &     26.4 (5.17)     &     27.2 (4.03)     &     26.8 (4.71)     &  $<$0.001   & 11560\\ 
+Categorías de índice de masa corporal: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$normal &    2756 (43.8\%)     &    1598 (30.3\%)     &    4354 (37.7\%)     &           &      \\ 
+$\qquad$obesidad &    1258 (20.0\%)     &    1056 (20.0\%)     &    2314 (20.0\%)     &           &      \\ 
+$\qquad$peso insuficiente &     103 (1.64\%)     &     23 (0.44\%)      &     126 (1.09\%)     &           &      \\ 
+$\qquad$sobrepeso &    2172 (34.5\%)     &    2594 (49.2\%)     &    4766 (41.2\%)     &           &      \\ 
+Fuma a diario &    2329 (37.0\%)     &    2950 (56.0\%)     &    5279 (45.7\%)     &  $<$0.001   & 11560\\ 
+bebe alcohol a diario: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$bebe casi todos los días &     719 (11.4\%)     &    1521 (28.9\%)     &    2240 (19.4\%)     &           &      \\ 
+$\qquad$bebe entre 1 y 4 días a la semana &    1735 (27.6\%)     &    1795 (34.1\%)     &    3530 (30.5\%)     &           &      \\ 
+$\qquad$no bebe o menos de 1-2 veces al mes &    3835 (61.0\%)     &    1955 (37.1\%)     &    5790 (50.1\%)     &           &      \\ 
+Actividad fisica: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$activo‎/a &    3165 (50.3\%)     &    3039 (57.7\%)     &    6204 (53.7\%)     &           &      \\ 
+$\qquad$no activo‎/a &    3124 (49.7\%)     &    2232 (42.3\%)     &    5356 (46.3\%)     &           &      \\ 
+Escala de depresion EURO-D: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$Alta depresión &     242 (3.85\%)     &     98 (1.86\%)      &     340 (2.94\%)     &           &      \\ 
+$\qquad$Baja depresión &    4384 (69.7\%)     &    4349 (82.5\%)     &    8733 (75.5\%)     &           &      \\ 
+$\qquad$Moderada depresión &    1663 (26.4\%)     &     824 (15.6\%)     &    2487 (21.5\%)     &           &      \\ 
+CASP12: &                     &                     &                     &  $<$0.001   & 11560\\ 
+$\qquad$alta calidad vida &     782 (12.4\%)     &     638 (12.1\%)     &    1420 (12.3\%)     &           &      \\ 
+$\qquad$baja calidad vida &    1918 (30.5\%)     &    1400 (26.6\%)     &    3318 (28.7\%)     &           &      \\ 
+$\qquad$moderada calidad vida &     618 (9.83\%)     &     559 (10.6\%)     &    1177 (10.2\%)     &           &      \\ 
+$\qquad$muy alta calidad vida &    2971 (47.2\%)     &    2674 (50.7\%)     &    5645 (48.8\%)     &           &      \\ 
+CASP:índice calidad vida/bienestar &     38.0 (6.37)     &     38.6 (6.18)     &     38.3 (6.29)     &  $<$0.001   & 11560 \\ 
+ 
+    \hline
+    \end{longtable}\end{small} 
+
+
+\end{landscape}
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
