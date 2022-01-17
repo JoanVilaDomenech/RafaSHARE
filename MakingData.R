@@ -413,6 +413,11 @@ Hmisc::label(datpre$hermanosvivos) <- "Alive brothers"
 # limitacionAVD
 Hmisc::label(datpre$limitacionAVD) <- "Acti.Vida Diaria Indice W & H"
 
+# Age at Recruitment 
+tmp <- subset(datpre, visnumber==1)[,c("Identificadorpersona", "age")]
+tmp <- rename.vars(tmp, "age", "ageRecru")
+datpre <- merge(datpre, tmp, by="Identificadorpersona", all.x=T) 
+
 # saving
 dat <- datpre
 save(dat, file = "../data/dat.rda")
