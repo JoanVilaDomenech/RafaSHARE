@@ -1,0 +1,547 @@
+\documentclass[a4paper,12pt, titlepage]{article}
+\usepackage[english]{babel}
+\usepackage[svgnames]{xcolor} % Required for colour specification
+\newcommand{\plogo}{\fbox{$\mathcal{PL}$}} % Generic dummy publisher logo
+\usepackage[utf8x]{inputenc} % Required for inputting international characters
+\usepackage{longtable}
+\usepackage[a4paper,top=2cm,bottom=1.5cm,left=2cm,right=2cm]{geometry}
+\usepackage{multicol}
+%\usepackage[pdftex]{graphicx}
+\usepackage{fancyhdr}
+\usepackage[final]{pdfpages}
+\usepackage{amssymb,amsmath}
+\usepackage{hyperref}
+%\usepackage{Sweave}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{threeparttable, tablefootnote}
+\usepackage{lscape}
+\usepackage{multirow}
+\usepackage{pdflscape}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{colortbl, xcolor}
+\usepackage{color} 
+\usepackage{arydshln}
+
+\newcommand{\Rlogo}{\protect\includegraphics[height=1.8ex,keepaspectratio]{/Users/jvila/Dropbox/cursoR/fig/Rlogo.pdf}}
+
+%\usepackage{draftwatermark}
+%\SetWatermarkText{Draft}
+%\SetWatermarkScale{8}
+
+% to coloured verbatim
+\usepackage{fancyvrb}
+\DefineVerbatimEnvironment{verbatim}
+  {Verbatim}
+  {fontsize=\footnotesize,formatcom=\color{blue}}
+
+%\newcommand{\headrulecolor}[1]{\patchcmd{\headrule}{\hrule}{\color{#1}\hrule}{}{}}
+%\newcommand{\footrulecolor}[1]{\patchcmd{\footrule}{\hrule}{\color{#1}\hrule}{}{}}
+
+\pagestyle{fancy}% Change page style to fancy
+\fancyhf{}% Clear header/footer
+\fancyhead[L]{ }
+\fancyhead[C]{\tiny Tesi Rafa Llorens}
+\fancyhead[R]{\today}
+\fancyfoot[L]{Author: Joan Vila}
+\fancyfoot[R]{Page: \thepage}
+\renewcommand{\headrulewidth}{1.2pt}% Default \headrulewidth is 0.4pt
+\renewcommand{\footrulewidth}{0.8pt}% Default \footrulewidth is 0pt
+
+
+
+\newenvironment{changemargin1}{
+  \begin{list}{}{
+    \setlength{\leftmargin}{-1cm}
+    \setlength{\rightmargin}{1cm}
+    \footnotesize
+  }
+  \item[]
+  }{\end{list}}
+
+\setcounter{tocdepth}{4} 
+\setcounter{secnumdepth}{4}
+%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%
+\title{
+\begin{center}
+\textbf{\Huge {\color{red}``Study SHARE''}\\
+\small Tesi Rafa Llorens\\
+ \texttt{rafallorens@euit.fdsll.cat}\\
+\
+\\
+\large Version 3.0}\\
+\
+\\
+{\large - Joan Vila -\\
+\texttt{joanviladomenech@gmail.com} }
+\date{\today} 
+\end{center}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+\newpage
+
+\section{Version History}
+\begin{table}[H]
+\centering
+\begin{tabular}{L{2cm}  C{3.5cm}  L{9cm}}
+\hline
+Version  & Effective Date & Changes \\
+\hline
+ &  & \\
+1 & 06-Dec-2021  & Exploració de les dades + expresió de dubtes\\
+ &  & \\
+2 & 16-Jan-2022  & S'elimina la major part de la Versió 1 i, amb la majoria de dubtes resolts, es presenta una descriptiva general.  Queda pendent de discutir-la amb en Rafa\\
+ &  & \\
+3 & 05-Mar-2022  & Es rerant les anàlisis amb la darrera versió de la base de dades i es presenten els models discutits a la teleconf\\
+ &  & \\
+\hline
+\end{tabular}
+\end{table}
+\newpage
+\tableofcontents
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+<<echo=FALSE, results='hide', warning=FALSE, error=FALSE, message=FALSE>>=
+rm(list=ls())
+setwd("/Users/jvila/Dropbox/euit/Doctorants/RafaLlorens/SHARE/RafaSHARE/")
+library(haven)
+library(Epi)
+library(Hmisc)
+library(gdata)
+library(compareGroups)
+library(ggplot2)
+library(lme4)
+
+RutinesLocals <- "/Users/jvila/Dropbox/rutines"
+source(file.path(RutinesLocals,"intervals.r"))
+
+load("../data/dat.rda")
+
+@
+\section{Introduction}
+
+Es parteix de la base de dades ``OLA567DEPURADAdef.sav', que va fer arribar en Rafa el 20/01/2022.\\
+
+La base de dades \Sexpr{nrow(dat)} registres, a partir de tres entrevistes realitzades a \Sexpr{length(unique(dat$Identificadorpersona))} individus. \\
+
+Concretament les entrevistes es van realitzar el següents anys:
+<<echo=FALSE, results='markup', warning=FALSE, error=FALSE, message=FALSE,cache=FALSE>>=
+table(dat$Añoentrevista)
+@
+Els registres contenen dades de 
+\begin{itemize}
+\item Participants, n = \Sexpr{with(dat, sum(visnumber==1 & PartiType=="Participant"))}
+\item Parlles d'aquest Participants, n = \Sexpr{with(dat, sum(visnumber==1 & PartiType=="Partner"))}
+\end{itemize}
+
+{\color{red} S'eliminen \Sexpr{with(dat, sum(flow=="Parti.Age <49" & PartiType=="Participant" & visnumber ==1))} participants (i, si les tenen, també s'eliminen les seves parelles), per tenir en el moment del reclutament una edat de $<$ 50 anys.}. Finalment queden:
+<<echo=FALSE, results='hide', warning=FALSE, error=FALSE, message=FALSE,cache=FALSE>>=
+dat <- subset(dat, flow== "ok")
+@
+<<echo=FALSE, results='markup', warning=FALSE, error=FALSE, message=FALSE,cache=FALSE>>=
+table(dat$Añoentrevista)
+@
+\begin{itemize}
+\item Participants, n = \Sexpr{with(dat, sum(visnumber==1 & PartiType=="Participant"))}
+\item Parlles d'aquest Participants, n = \Sexpr{with(dat, sum(visnumber==1 & PartiType=="Partner"))}
+\item Total registres = \Sexpr{nrow(dat)}
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{landscape}
+\section{Característiques al reclutament dels participants}
+\subsection{Segons Participant/parella}
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+export2latex(
+createTable(compareGroups(PartiType ~ country + nacidopaisentrevist + sex + ageRecru 
+                          + yearGroup + ageGroup + civilStat + SurvPartner + edadpareja
+                          + vivirconyugue + numerohijos + numeronietos 
+                          + personasconvivenhogar + hijovivecerca + vivemadre
+                          + vivepadre + hermanosvivos + nivelestudios
+                          + situacionlaboral + llegafindemes
+                          + arearesidencia + Ingresoshogar + ayudaeconomica
+                          + saludinfancia + vacunasinfantil + chronicNum + chronicCat  
+                          + limitacionAVD + dificultadmovilidad + saludautopercibida    
+                          + visitasmedico12meses + ingresohospital12meses + indicemasacorporal
+                          + categoriaIMC + Fumaadiario + bebeadiario
+                          + activfisica + escaladepresion + CASP + casp.12
+                          ,
+                  method = c(3,3,3,1, 
+                            3,3,3,3,1, 
+                            3,2,2, 
+                            2,3,3,
+                            3,2,3,
+                            3,3, 
+                            3,2,3,
+                            3,3,2,3,
+                            3,3,3,
+                            3,3,1,
+                            3,3,3,
+                            3,3,3,2), 
+                    data = dat, subset = visnumber==1, max.xlev = 15), 
+  show.all = TRUE, all.last = TRUE, show.n = T, hide.no = c("N", "No"), hide = c(sex ="Male"))
+, caption= "General characteristics at recruitment by Participant/Partner", size = "small")
+@
+\end{landscape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{landscape}
+\subsection{Segons categories de CASP}
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+export2latex(
+createTable(compareGroups(CASP  ~ PartiType + country + nacidopaisentrevist + sex + ageRecru 
+                          + yearGroup + ageGroup + civilStat + SurvPartner + edadpareja
+                          + vivirconyugue + numerohijos + numeronietos 
+                          + personasconvivenhogar + hijovivecerca + vivemadre
+                          + vivepadre + hermanosvivos + nivelestudios
+                          + situacionlaboral + llegafindemes
+                          + arearesidencia + Ingresoshogar + ayudaeconomica
+                          + saludinfancia + vacunasinfantil + chronicNum + chronicCat  
+                          + limitacionAVD + dificultadmovilidad + saludautopercibida    
+                          + visitasmedico12meses + ingresohospital12meses + indicemasacorporal
+                          + categoriaIMC + Fumaadiario + bebeadiario
+                          + activfisica + escaladepresion + casp.12
+                          ,
+                  method = c(3, 3,3,3,1, 
+                            3,3,3,3,1, 
+                            3,2,2, 
+                            2,3,3,
+                            3,2,3,
+                            3,3, 
+                            3,2,3,
+                            3,3,2,3,
+                            3,3,3,
+                            3,3,1,
+                            3,3,3,
+                            3,3,2), 
+                    data = dat, subset = visnumber==1, max.xlev = 15), 
+  show.all = FALSE, show.n = T, hide.no = c("N", "No"), hide = c(sex ="Male", 
+PartiType= "Participant"))
+, caption= "General characteristics at recruitment by CASP categories", size = "small")
+@
+\end{landscape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{landscape}
+\subsection{Segons País}
+{\color{red} Nota: com que son 13 països, la taula és massa ampla i no hi cap. Per tant s'ha partit amb dos grups de països i a final s'ha afegit una tercera taula amb el p-valor.\\ 
+Alguns p-valor no s'han pogut calcular (p.e. en Age Group) per haver-hi massa pocs individus en algun grup i país. Si cal, ja es calcularan aquests p-valor.}
+
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+export2latex(                        
+createTable(compareGroups(country  ~ PartiType  + nacidopaisentrevist + sex + ageRecru 
+                          + yearGroup + ageGroup + civilStat + SurvPartner + edadpareja
+                          + vivirconyugue + numerohijos + numeronietos 
+                          + personasconvivenhogar + hijovivecerca + vivemadre
+                          + vivepadre + hermanosvivos + nivelestudios
+                          + situacionlaboral + llegafindemes
+                          + arearesidencia + Ingresoshogar + ayudaeconomica
+                          + saludinfancia + vacunasinfantil + chronicNum + chronicCat  
+                          + limitacionAVD + dificultadmovilidad + saludautopercibida    
+                          + visitasmedico12meses + ingresohospital12meses + indicemasacorporal
+                          + categoriaIMC + Fumaadiario + bebeadiario
+                          + activfisica + escaladepresion + casp.12 + CASP
+                          ,
+                  method = c(3, 3,3,1, 
+                            3,3,3,3,1, 
+                            3,2,2, 
+                            2,3,3,
+                            3,2,3,
+                            3,3, 
+                            3,2,3,
+                            3,3,2,3,
+                            3,3,3,
+                            3,3,1,
+                            3,3,3,
+                            3,3,2, 3), 
+                    data = dat, subset = visnumber==1 & country%in%names(table(dat$country))[1:7], 
+                  max.xlev = 15, , max.ylev = 15), 
+  show.all = FALSE, show.n = F, show.p.overall = FALSE,
+  hide.no = c("N", "No"), hide = c(sex ="Male", 
+PartiType= "Participant"))
+, caption= "General characteristics at recruitment by Country, part I", size = "scriptsize", landscape= FALSE)
+@
+\newpage
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+export2latex(                        
+createTable(compareGroups(country  ~ PartiType  + nacidopaisentrevist + sex + ageRecru 
+                          + yearGroup + ageGroup + civilStat + SurvPartner + edadpareja
+                          + vivirconyugue + numerohijos + numeronietos 
+                          + personasconvivenhogar + hijovivecerca + vivemadre
+                          + vivepadre + hermanosvivos + nivelestudios
+                          + situacionlaboral + llegafindemes
+                          + arearesidencia + Ingresoshogar + ayudaeconomica
+                          + saludinfancia + vacunasinfantil + chronicNum + chronicCat  
+                          + limitacionAVD + dificultadmovilidad + saludautopercibida    
+                          + visitasmedico12meses + ingresohospital12meses + indicemasacorporal
+                          + categoriaIMC + Fumaadiario + bebeadiario
+                          + activfisica + escaladepresion + casp.12 + CASP
+                          ,
+                  method = c(3, 3,3,1, 
+                            3,3,3,3,1, 
+                            3,2,2, 
+                            2,3,3,
+                            3,2,3,
+                            3,3, 
+                            3,2,3,
+                            3,3,2,3,
+                            3,3,3,
+                            3,3,1,
+                            3,3,3,
+                            3,3,2, 3), 
+                    data = dat, subset = visnumber==1 & country%in%names(table(dat$country))[8:length(names(table(dat$country)))], 
+                  max.xlev = 15, , max.ylev = 15), 
+  show.all = FALSE, show.n = F, show.p.overall = FALSE,
+  hide.no = c("N", "No"), hide = c(sex ="Male", 
+PartiType= "Participant"))
+, caption= "General characteristics at recruitment by Country, part II", size = "scriptsize", landscape= FALSE)
+@
+\newpage
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+export2latex(                        
+createTable(compareGroups(country  ~ PartiType  + nacidopaisentrevist + sex + ageRecru 
+                          + yearGroup + ageGroup + civilStat + SurvPartner + edadpareja
+                          + vivirconyugue + numerohijos + numeronietos 
+                          + personasconvivenhogar + hijovivecerca + vivemadre
+                          + vivepadre + hermanosvivos + nivelestudios
+                          + situacionlaboral + llegafindemes
+                          + arearesidencia + Ingresoshogar + ayudaeconomica
+                          + saludinfancia + vacunasinfantil + chronicNum + chronicCat  
+                          + limitacionAVD + dificultadmovilidad + saludautopercibida    
+                          + visitasmedico12meses + ingresohospital12meses + indicemasacorporal
+                          + categoriaIMC + Fumaadiario + bebeadiario
+                          + activfisica + escaladepresion + casp.12 + CASP
+                          ,
+                  method = c(3, 3,3,1, 
+                            3,3,3,3,1, 
+                            3,2,2, 
+                            2,3,3,
+                            3,2,3,
+                            3,3, 
+                            3,2,3,
+                            3,3,2,3,
+                            3,3,3,
+                            3,3,1,
+                            3,3,3,
+                            3,3,2, 3), 
+                    data = dat, subset = visnumber==1, 
+                  max.xlev = 15, , max.ylev = 15), 
+  show.all = FALSE, show.n = F, show.p.overall = TRUE, show.descr = FALSE, 
+  hide.no = c("N", "No"), hide = c(sex ="Male", 
+PartiType= "Participant"))
+, caption= "General characteristics at recruitment by counry, p-values", size = "scriptsize", landscape= FALSE)
+@
+\end{landscape}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{landscape}
+\section{Univariate by Visit}
+\subsection{General characteristics at recruitment (Ola = 5)}
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+export2latex(
+createTable(compareGroups(CASP  ~  country +
+            ageRecru + sex + PartiType +
+            arearesidencia + nivelestudios + saludautopercibida + 
+            numhijosGR + numnietosGR + llegafindemes + saludinfancia +
+            civilStat + chronicCat + limitacionAVD + saludautopercibida + 
+            visitasmedico12meses + Fumaadiario + bebeadiario +
+            activfisica + escaladepresion 
+                          ,
+            data = dat, subset = visnumber==1, 
+            max.xlev = 15, , max.ylev = 15), 
+  show.all = FALSE, show.n = F, show.p.overall = TRUE, show.descr = TRUE, 
+  hide.no = c("N", "No"), hide = c(sex ="Male", PartiType= "Participant"))
+, caption= "General characteristics at recruitment (Ola = 5) by CASP-12 groups", size = "scriptsize", landscape= FALSE)
+@
+\end{landscape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{landscape}
+\subsection{General characteristics at second visit (Ola = 6)}
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+export2latex(
+createTable(compareGroups(CASP  ~  country +
+            ageRecru + sex + PartiType +
+            arearesidencia + nivelestudios + saludautopercibida + 
+            numhijosGR + numnietosGR + llegafindemes + saludinfancia +
+            civilStat + chronicCat + limitacionAVD + saludautopercibida + 
+            visitasmedico12meses + Fumaadiario + bebeadiario +
+            activfisica + escaladepresion 
+                          ,
+            data = dat, subset = visnumber==2, 
+            max.xlev = 15, , max.ylev = 15), 
+  show.all = FALSE, show.n = F, show.p.overall = TRUE, show.descr = TRUE, 
+  hide.no = c("N", "No"), hide = c(sex ="Male", PartiType= "Participant"))
+, caption= "General characteristics at recruitment (Ola = 5) by CASP-12 groups", size = "scriptsize", landscape= FALSE)
+@
+\end{landscape}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{landscape}
+\subsection{General characteristics at third visit (Ola = 7)}
+<<echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+export2latex(
+createTable(compareGroups(CASP  ~  country +
+            ageRecru + sex + PartiType +
+            arearesidencia + nivelestudios + saludautopercibida + 
+            numhijosGR + numnietosGR + llegafindemes + saludinfancia +
+            civilStat + chronicCat + limitacionAVD + saludautopercibida + 
+            visitasmedico12meses + Fumaadiario + bebeadiario +
+            activfisica + escaladepresion 
+                          ,
+            data = dat, subset = visnumber==3, 
+            max.xlev = 15, , max.ylev = 15), 
+  show.all = FALSE, show.n = F, show.p.overall = TRUE, show.descr = TRUE, 
+  hide.no = c("N", "No"), hide = c(sex ="Male", PartiType= "Participant"))
+, caption= "General characteristics at recruitment (Ola = 5) by CASP-12 groups", size = "scriptsize", landscape= FALSE)
+@
+\end{landscape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{landscape}
+\section{Multivariate}
+<<echo=FALSE, results='markup', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+load(file = "../data/ResuModels.rda")
+options(width = 300)
+# ResuModels
+data_blank <- sapply(ResuModels, as.character) 
+data_blank[is.na(data_blank)] <- ""              
+noquote(data_blank )   
+# vivirconyugue es inclos a civilStat 
+@
+\end{landscape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+<<echo=FALSE, results='hide', warning=FALSE, error=FALSE, message=FALSE>>=
+tobeplot <- ResuModels[grep("Austria", ResuModels$xname):grep("Switzerland", ResuModels$xname), c("xname", "Mod2Estimate", "Mod2Lower95CI", "Mod2Upper95CI")]
+tobeplot$xname <- gsub('relevel\\(country: , ref = \"Spain\")', "", tobeplot$xname)
+jpeg(filename = "CASPcountry.jpeg",width = 480 *1.5, height = 480)
+ggplot(data = tobeplot) +
+  aes(x = xname,
+      y = Mod2Estimate,
+      ymin=Mod2Lower95CI, 
+      ymax=Mod2Upper95CI) +
+  ggtitle(label = '') +
+  xlab(label = 'Country') +
+  ylab(label = 'CASP:índice calidad vida/bienestar') +
+  geom_pointrange(color= "blue", size=0.75)  +
+  geom_hline(yintercept=0, linetype="dashed", color = "red") +
+  annotate("text", x = 7, y = 0, label = "Spain", color= "red", size=10)  
+dev.off()
+@
+\begin{landscape}
+\setkeys{Gin}{width=1.2\textwidth}
+\begin{figure}[H]
+\begin{center}
+\caption{CASP by country}
+\includegraphics[]{CASPcountry.jpeg}
+\end{center}
+\end{figure}
+\end{landscape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Statistical methods}
+ <<echo=FALSE, results= 'hide', warning=FALSE, error=FALSE, message=FALSE, cache=FALSE>>=
+maxchange <- ceiling(max(with(ResuModels, (Mod1Estimate - Mod2Estimate)/Mod1Estimate*100), na.rm=T))
+################################################################################
+# checking collinearity
+################################################################################
+library(car)
+xdat <- subset(dat, visnumber==3)
+yy <- lm(casp.12 ~ relevel(country, ref = "Spain") +
+                ageRecru + sex + PartiType +
+                arearesidencia + nivelestudios + saludautopercibida + 
+            numhijosGR + numnietosGR + llegafindemes + saludinfancia +
+            civilStat + chronicCat + limitacionAVD + saludautopercibida + 
+            visitasmedico12meses + Fumaadiario + bebeadiario +
+            activfisica + escaladepresion , 
+            data = xdat)
+
+@
+The multivariate models were performed by linear mixed-effects models, via REML using the \emph{lmer} functions of the \emph{lme4} package of the R-software. A first model  (FullModel) was defined with the values of CASP-12 as the outcome and, as the explanatory variables, those that the scientific team, according to its own expertise as well as the revised bibliography, considered could be related to the outcome. To account for longitudinal measures (i.e. 3 consecutive visits) the participant ID was included as a random effect.\\
+
+Variables that did not achieve statistical significance in the FullModel were removed one by one (backward method) and the change in the coefficients due to its removal was evaluated. Compared with the FullModel, none of the remaining coefficients in the final model experienced a change greater than \Sexpr{maxchange}\%, except the number of grandchildren when the number of children was removed. For this reason, the latter, although was not significant, was retained in the final model. Sex did also not achieve statistical significance but was retained in the final model because the authors were interested in showing its effect in a multivariate model. \\
+
+Before multivariate models, the linearity effect of some variables was assessed. The distribution of the number of children and grandchildren was extremely skewed. Both variables were grouped into categories, according to what was suggested by smoothing spline regression. Also, multicollinearity among predictor variables was assessed by means of the Variance Inflation Factor (VIF). The maximum VIF was \Sexpr{round(max(cbind(vif(yy))[,1]), 2)}.\\
+
+Analyses were performed by R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. version 4.1.0.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Comentaris de JVila}
+
+Veuràs que hi ha una barreja de català, castellà i anglès. En general he utilitzat com estava originàriament (p.e. arearesidencia: Pueblo pequeño/rural), si t'he d'escriure alguna cosa ho faig amb català i si he fet algun canvi p.e. en el nom dels països o el Statistical methods ho fet amb anglés ja que crec que ho aprofitaràs millor amb aquest idioma.\\
+
+Les taules que es mostren al secció 'Característiques al reclutament dels participants' son sobretot exploratòries per saber la dades de que es disposa i com es relacionen.
+Crec que no s'haurien d'utilitzar en el possible article. En el seu lloc s'haurien d'utilitzar, i potser no totes, les taules de la secció 'Univariate by Visit'.\\
+
+En una teleconferència vam decidir fer un model multivariat amb el valors de CASP12 com a resultat i les següents variables predictores:
+\\.- Visnumber (la onada) 
+\\.- country
+\\.- ageRecru (edat en el moment de la primera visita o onada 5)
+\\.- sex
+\\.- PartiType (si eren dades del participant o de la seva parella)
+\\.- Nivelestudios
+\\.- saludautopercibida
+\\.- numhijosGR (originàriament 'numhijos' era una variable numèrica, però se n'han fet categories com s'explica a ‘Statistical methods)
+\\.- numnietosGR (originàriament 'numnietos' era una variable numèrica, però se n'han fet categories com s'explica a ‘Statistical methods)
+\\.- llegafindemes
+\\.- saludinfancia
+\\.- civilStat (també havíem decidit utilitzar 'vivirconyugue' però aquestes dos variables estan molt relacionades entre elles i sòls se'n pot posar una en el mateix model)
+\\.- limitacionAVD
+\\.- saludautopercibida
+\\.- visitasmedico12meses
+\\.- bebeadiario
+\\.- activfisica
+\\.- escaladepresion
+\
+\\
+
+Per models multivariats amb variables categòriques s'ha de seleccionar un categoria de referencia (p.e. en el país la categoria de referència és 'Spain'). En el output dels models multivariats, la categoria de referència és la que falta.\\
+
+En els models multivariats hi ha dos model: linicial (full model) i el model final, un cop eliminades les variables que no assoleixen significació estadística (veure secció 'Statistical methods'). A l'article sobretot s'hauria de parlar del model final. Quan el coeficient és negatiu vol dir que, comparat amb la categoria de referència, la categoria que s'explora té menys puntuació de CASP12 i viceversa, per exemple:\\
+.- comparat amb la primera visita (Ola 5) a la segona visita (Ola 6) la puntuació és menor (= -0.0437) i encara és molt més menor en la tercera visita (Ola 7)\\
+.- Austria puntua millor que Spain (+ 1.8822) i la Czech Republic puntua pitjor que Spain (- 1.035)\\
+.- etc.\\
+
+Per aquests tipus de models (mixed models, veure Statistical methods) hi ha tota una controvèrsia de com s'han de calcular el p-valor. En canvi sí que es poden calcular, mitjançant una tècnica que es coneix com bootstrapping, els intervals de confiança (IC). Quan l'interval de confiança inclou el valor 0, per exemple el IC pel sexe (entre -0.1958 i 0.0831, nota que hi ha el 0) no s'han observat diferencies significatives, tot i els 'Male' ho tenen pitjor (coeficient negatiu = -0.0562 ).\\
+
+He fet sòls una figura, ja que fer-les és molt entretingut. Si se n'hagués de fer més i/o exportar-les al format que demani la revista, ja ho parlarem. 
+
+\end{document}
+
+

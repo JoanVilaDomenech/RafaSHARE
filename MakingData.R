@@ -7,7 +7,8 @@ library(Hmisc)
 library(gdata)
 library(labelled)
 
-datpre <- as.data.frame(read_sav("../data/Easy567depurada v311gener.sav"))
+# datpre <- as.data.frame(read_sav("../data/Easy567depurada v311gener.sav"))
+datpre <- as.data.frame(read_sav("../data/OLA567DEPURADAdef.sav"))
 
 head(datpre)
 str(datpre)
@@ -16,10 +17,13 @@ stat.table(list(Country=País, QoL=CASP),
            list(N=count(),'%'=percent(CASP)), 
            data=datpre,margins=T)
 
-stat.table(index=list(Country=País), list(N=count(), 
+x <- stat.table(index=list(Country=País), list(N=count(), 
     "mean"=mean(casp.12), "SD"= sd(casp.12)), data=datpre)
 
-stat.table(list(Country=País, Missing=is.na(CASP)), 
+y <- stat.table(list(Country=País, Missing=is.na(CASP)), 
+           list(N=count()), data=datpre)
+
+y <- stat.table(list(Country=País, Missing=is.na(CASP)), 
            list(N=count(),'%'=percent(is.na(CASP))), 
            data=datpre,margins=T)
 
@@ -39,11 +43,41 @@ datpre$Identificadorhogar <- toupper(datpre$Identificadorhogar)
 datpre$Identificadorpareja <- toupper(datpre$Identificadorpareja)
 length(unique(datpre$Identificadorpersona))
 
+
 # corregeixo errors
+###################
+xvaris <- c("Identificadorpersona", "Identificadorhogar", "Identificadorpareja", "Genero", "Ola")
+subset(datpre, substr(datpre$Identificadorpersona, 1, 9) == "SI-537920")[, xvaris]
+
+datpre$Identificadorhogar <- with(datpre, ifelse(Identificadorpersona=="EG-049809-01" & Ola==6 & Genero== 0, "EG-049809-A", Identificadorhogar))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="EG-049809-01" & Ola==6 & Genero== 0, "EG-049809-01-02", Identificadorpareja))
+
+datpre$Identificadorhogar  <- with(datpre, ifelse(Identificadorpersona=="EG-113241-01" & Ola==7 & Genero== 1, "EG-113241-A", Identificadorhogar))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="EG-113241-01" & Ola==7 & Genero== 1, "EG-113241-01-02", Identificadorpareja))
+
+datpre$Identificadorhogar  <- with(datpre, ifelse(Identificadorpersona=="EG-503142-01" & Ola==7 & Genero== 1, "EG-503142-A", Identificadorhogar))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="EG-503142-01" & Ola==7 & Genero== 1, "EG-503142-01-03", Identificadorpareja))
+
+datpre$Identificadorhogar  <- with(datpre, ifelse(Identificadorpersona=="EG-571277-01" & Ola==7 & Genero== 0, "EG-571277-A", Identificadorhogar))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="EG-571277-01" & Ola==7 & Genero== 0, "EG-571277-01-02", Identificadorpareja))
+
+datpre$Identificadorhogar  <- with(datpre, ifelse(Identificadorpersona=="EG-625924-01" & Ola==7 & Genero== 0, "EG-625924-A", Identificadorhogar))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="EG-625924-01" & Ola==7 & Genero== 0, "EG-625924-01-02", Identificadorpareja))
+
+datpre$Identificadorhogar  <- with(datpre, ifelse(Identificadorpersona=="LU-186391-01" & Ola==7 & Genero== 1, "LU-186391-A", Identificadorhogar))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="LU-186391-01" & Ola==7 & Genero== 1, "LU-186391-01-02", Identificadorpareja))
+
+datpre$Identificadorhogar  <- with(datpre, ifelse(Identificadorpersona=="LU-355145-01" & Ola==7 & Genero== 1, "LU-355145-A", Identificadorhogar))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="LU-355145-01" & Ola==7 & Genero== 1, "LU-355145-01-02", Identificadorpareja))
+
+datpre$Identificadorhogar  <- with(datpre, ifelse(Identificadorpersona=="SE-285504-01" & Ola==7 & Genero== 1, "SE-285504-A", Identificadorhogar))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="SE-285504-01" & Ola==7 & Genero== 1, "SE-285504-01-02", Identificadorpareja))
+
+
 datpre$Identificadorpersona <- with(datpre, ifelse(Identificadorpersona=="EG-280794-01" & Ola==5 & Genero== 0, "EG-280794-03", Identificadorpersona))
 
 datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="CZ-024433-02" & Ola==7 & Genero== 0, "CZ-024433-01-02", Identificadorpareja))
-datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpareja=="CZ-024433-01-03" & Ola==7 & Genero== 0, "CZ-024433-01-02", Identificadorpareja))
+datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpareja=="CZ-024433-01-03" & Ola==7 & Genero== 1, "CZ-024433-01-02", Identificadorpareja))
 
 datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="CZ-437040-01" & Ola==7 & Genero== 0, "CZ-437040-01-02", Identificadorpareja))
 datpre$Identificadorpareja <- with(datpre, ifelse(Identificadorpersona=="CZ-437040-02" & Ola==7 & Genero== 1, "CZ-437040-01-02", Identificadorpareja))
@@ -253,12 +287,13 @@ xhogar <- c(names(table(subdat06$Identificadorhogar)),
             )
 tmp01 <- with(subset(datpre, Identificadorhogar%nin%xhogar), table(Identificadorhogar))
 tmp01 <- names(tmp01[tmp01==1])
+
 subdat01 <- datpre[datpre$Identificadorhogar%in%tmp01, xvaris]
 
-subdat01$PartiType <- "Participant"
+# subdat01$PartiType <- "Participant"
 
 
-typeparti <- rbind(subdat01[, c("ID", "PartiType")], 
+typeparti <- rbind(#subdat01[, c("ID", "PartiType")], 
       # subdat02[, c("ID", "PartiType")],
       subdat03[, c("ID", "PartiType")],
       # subdat04[, c("ID", "PartiType")],
@@ -271,7 +306,6 @@ datpre$ID[datpre$ID%nin%typeparti$ID]
 datpre <- merge(datpre, typeparti, by = "ID", all.x =T)
 
 Hmisc::label(datpre$PartiType) <- "Participant/Partner"
-
 
 
 # visit number
@@ -352,13 +386,11 @@ datpre$yearGroup <- factor(datpre$yearGroup)
 Hmisc::label(datpre$yearGroup) <- "Born year Group"
 
 # ageGroup
-tmp <- val_labels(datpre$gruoedad)
-tmp <- data.frame(tmp)
-tmp <- rename.vars(tmp, "tmp", "gruoedad")
-tmp$ageGroup <- rownames(tmp)
-
-datpre <- merge(datpre, tmp, by= "gruoedad", all.x=T)
-datpre$ageGroup <- factor(datpre$ageGroup)
+datpre$ageGroup <- factor(with(datpre, ifelse(age<50, "<50",
+                                ifelse(age%in%c(50:64), "50-64",
+                                ifelse(age%in%c(65:74), "65-74",
+                                ifelse(age%in%c(75:84), "75-84",
+                                ifelse(age>=85, "85+", NA)))))))
 Hmisc::label(datpre$ageGroup) <- "Age Group"
 
 # estadocivil
@@ -384,12 +416,16 @@ Hmisc::label(datpre$vivirconyugue) <- "Living with a Couple"
 
 # "hijovivecerca",  "vivemadre", "vivepadre", "hermanosvivos", "nivelestudios", "situacionlaboral, llegarfindemes
 xvaris <- c("hijovivecerca",  "vivemadre", "vivepadre",  "nivelestudios",
-            "situacionlaboral", "llegarfindemes", "zonaresidencia",
-            "ayudaeconomica", "saludinfantil", "vacunasinfantil",
+            "situacionlaboral", "llegafindemes", "arearesidencia",
+            "ayudaeconomica", "saludinfancia", "vacunasinfantil",
             "enfermcronic", "limitacionAVD", "dificultadmovilidad",
             "saludautopercibida", "visitasmedico12meses", "ingresohospital12meses",
             "categoriaIMC", "Fumaadiario", "bebeadiario",
             "activfisica", "escaladepresion", "CASP")
+# xvaris[xvaris%nin%names(datpre)]
+# names(datpre)[names(datpre)%nin%xvaris]
+# agrep("zonaresidencia", names(datpre), value =T)
+
 
 for (i in 1:length(xvaris)){
     tmp <- val_labels(datpre[, xvaris[i]])
@@ -404,6 +440,17 @@ for (i in 1:length(xvaris)){
     Hmisc::label(datpre[,xvaris[i]]) <- x
 }
 
+# nivelestudios
+table(datpre$nivelestudios)
+datpre$nivelestudios <- with(datpre, factor(nivelestudios, levels = c("bajo", "medio", "Alto"))) 
+Hmisc::label(datpre$nivelestudios) <- "Educational level"
+
+
+
+datpre$CASP <- factor(as.character(datpre$CASP), 
+    levels=c("baja calidad vida", "moderada calidad vida", "alta calidad vida", "muy alta calidad vida"))
+Hmisc::label(datpre$CASP) <- "CASP:categories"
+
 datpre$casp.12 <- as.numeric(as.character(datpre$casp.12))
 Hmisc::label(datpre$casp.12) <- "CASP:índice calidad vida/bienestar"
 
@@ -413,14 +460,111 @@ Hmisc::label(datpre$hermanosvivos) <- "Alive brothers"
 # limitacionAVD
 Hmisc::label(datpre$limitacionAVD) <- "Acti.Vida Diaria Indice W & H"
 
+
 # Age at Recruitment 
 tmp <- subset(datpre, visnumber==1)[,c("Identificadorpersona", "age")]
 tmp <- rename.vars(tmp, "age", "ageRecru")
 datpre <- merge(datpre, tmp, by="Identificadorpersona", all.x=T) 
+Hmisc::label(datpre$ageRecru) <- "Age at recruitment"
+
+x <- table(datpre$Identificadorhogar)
+datpre$SurvPartner <- factor(with(datpre, ifelse(Identificadorhogar%in%names(x[x==6]), "Yes", 
+                          ifelse(Identificadorhogar%in%names(x[x==3]), "No", NA))))
+Hmisc::label(datpre$SurvPartner) <- "Partner surveyed"
+
+datpre <- rename.vars(datpre, "nºenfermedadescronicas", "chronicNum")
+datpre$chronicNum <- as.numeric(datpre$chronicNum)
+Hmisc::label(datpre$chronicNum) <- "Num Chronic disease"
+
+datpre$chronicCat <- factor(with(datpre, ifelse(chronicNum==0, "No", 
+                                  ifelse(chronicNum%in%c(1,2), "1-2", "3+"))),
+                            levels = c("No", "1-2", "3+"))
+Hmisc::label(datpre$chronicCat) <- "Chronic disease (grouped)"
+
 
 # saving
 dat <- datpre
+
+# selecting participant with age < 49
+vis1 <- subset(dat, PartiType=="Participant" & visnumber ==1)
+todele <- subset(vis1, age<50)$Identificadorhogar
+
+
+
+
+dat$flow <- with(dat, ifelse(Identificadorhogar%in%todele, "Parti.Age <49", "ok"))
+  
 save(dat, file = "../data/dat.rda")
 
 
+# algunes correccions
+#####################
+rm(list=ls())
+setwd("/Users/jvila/Dropbox/euit/Doctorants/RafaLlorens/SHARE/RafaSHARE/")
 
+library(Hmisc)
+library(gdata)
+library(labelled)
+
+load("../data/dat.rda")
+
+# numeronietos
+temp <- subset(dat, visnumber==1)[, c("Identificadorpersona", "numeronietos")]
+temp <- rename.vars(temp, "numeronietos", "xxx")
+dat <- merge(dat, temp, by = "Identificadorpersona", all.x=T)
+dat$numeronietos <-  with(dat, ifelse(is.na(numeronietos), xxx, numeronietos))
+
+# numeronietos GR
+dat$numnietosGR <- factor(with(dat, ifelse(numeronietos== 0, "No", ifelse(numeronietos <= 4, "1-4", 
+                                    ifelse(numeronietos <= 8, "5-8",
+                                    ifelse(numeronietos >= 9, "9+", NA))))),
+                levels= c("No", "1-4", "5-8", "9+"))
+Hmisc::label(dat$numnietosGR) <- "Numero nietos (agrupado)"
+
+
+# saludautopercibida
+dat$saludautopercibida <- factor(dat$saludautopercibida, levels = c("Pesima", "Regular", "Buena", "Muy buena", "Excelente"))
+
+# numerohijos
+dat$numhijosGR <- factor(with(dat, ifelse(numerohijos== 0, "No", ifelse(numerohijos <= 2, "1-2", 
+                                           ifelse(numerohijos <=5, "3-5",
+                                           ifelse(numerohijos>=6, "6+", NA))))), 
+                levels= c("No", "1-2", "3-5", "6+"))
+Hmisc::label(dat$numhijosGR) <- "Numero hijos (agrupado)"
+
+
+# saludinfancia
+dat$saludinfancia <- factor(dat$saludinfancia, levels = c("mala", "buena", "muy buena"))
+dat$civilStat <- factor(dat$civilStat, levels = c("soltero/a", "casado‎/a o pareja registrada", "divorciado‎/a o separado‎/a", "viudo/a"))
+Hmisc::label(dat$civilStat) <- "Civil Status"
+
+# visitasmedico12meses
+dat$visitasmedico12meses <- factor(dat$visitasmedico12meses, levels = c("de 1 a 5", "de 6 a 10",
+                                            "de 11 a 20", "de 21 a 30", "de 31 a 100"))
+Hmisc::label(dat$visitasmedico12meses) <- "Visitas medico 12meses"
+
+# bebeadiario
+dat$bebeadiario <- factor(dat$bebeadiario, levels = c("no bebe o menos de 1-2 veces al mes", 
+                                                      "bebe entre 1 y 4 días a la semana", 
+                                                      "bebe casi todos los días"))
+Hmisc::label(dat$bebeadiario) <- "Bebe alcohol a diario"
+
+# activfisica
+dat$activfisica <- factor(dat$activfisica, levels = c("no activo‎/a", "activo‎/a"))
+Hmisc::label(dat$activfisica) <- "Actividad fisica"
+
+# escaladepresion
+dat$escaladepresion <- factor(dat$escaladepresion, levels = c("Baja depresión",
+                                                              "Moderada depresión",
+                                                              "Alta depresión"))
+Hmisc::label(dat$escaladepresion) <- "Escala de depresion EURO-D"
+
+save(dat, file = "../data/dat.rda")
+
+# 1)	Refer les anàlisi amb la base dades nova
+# 2)	Eliminar els menors de 50 anys
+# 3)	Reordenar les categories de CASP en el resultats
+# 4)	Explorar el següent model multivariat
+# 
+# CASP = sexe + age + ruralitat + país + nivell estudis + salut auto percebuda + partner + estat civil + viu en parella + fills + nets + llegarfindemes + Estado de salud infantil + enfermedades crónicas + Acti.Vida Diaria Indice W & H + saludautopercibida + visitasmedico12meses + Fuma a diario + bebe alcohol a diario + Actividad física: + Escala de depresion EURO-D
+# 
